@@ -4,21 +4,21 @@ import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiUsers, FiStar } from 'react-icons/fi';
 /* ── Leaf Icon ── */
+
 function LeafIcon({ size = 20, color = 'currentColor' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M12 2C7 2 3 7 3 12c0 3.5 2 6.5 5 8l1-4c-1.5-1-2.5-2.5-2.5-4 0-3 2.5-5.5 5.5-5.5S17.5 9 17.5 12c0 1.5-1 3-2.5 4l1 4c3-1.5 5-4.5 5-8 0-5-4-10-9-10z"
+        d="M6.5 20C6.5 20 5 13 9 9C13 5 20 4 20 4C20 4 20 11 16 15C12 19 6.5 20 6.5 20Z"
         fill={color}
-        opacity="0.9"
       />
       <path
-        d="M12 22V12M12 12C10 10 8 9 7 9"
+        d="M6.5 20L12 14"
         stroke={color}
-        strokeWidth="1.5"
+        strokeWidth="1.4"
         strokeLinecap="round"
         fill="none"
-        opacity="0.7"
+        opacity="0.5"
       />
     </svg>
   );
