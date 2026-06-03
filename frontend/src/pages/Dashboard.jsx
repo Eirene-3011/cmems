@@ -47,18 +47,35 @@ const formatPHPShort = v => {
   return `₱${n}`;
 };
 
-/* ─── Cross SVG ─── */
-function Cross({ style, className }) {
+/* ─── Leaf Icon ─── */
+function LeafIcon({ size, color = 'currentColor', style, className }) {
+  const w = size || (style?.width) || 20;
+  const h = size || (style?.height) || 20;
   return (
-    <svg viewBox="0 0 24 24" fill="none" style={style} className={className} aria-hidden="true">
-      <rect x="10" y="2" width="4" height="20" rx="2" fill="currentColor" />
-      <rect x="2" y="9" width="20" height="4" rx="2" fill="currentColor" />
+    <svg
+      width={w} height={h}
+      viewBox="0 0 24 24" fill="none"
+      style={style} className={className}
+      aria-hidden="true"
+    >
+      <path
+        d="M6.5 20C6.5 20 5 13 9 9C13 5 20 4 20 4C20 4 20 11 16 15C12 19 6.5 20 6.5 20Z"
+        fill="currentColor"
+      />
+      <path
+        d="M6.5 20L12 14"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.5"
+      />
     </svg>
   );
 }
 
-/* ─── Radiant cross watermark ─── */
-function RadiantCross() {
+/* ─── Radiant leaf watermark ─── */
+function RadiantLeaf() {
   return (
     <svg viewBox="0 0 300 300" fill="none" style={{
       position: 'absolute', top: -60, right: -60,
@@ -70,8 +87,16 @@ function RadiantCross() {
           y2={150 + 160 * Math.sin((a * Math.PI) / 180)}
           stroke="#d97706" strokeWidth="1" strokeDasharray="4 8" />
       ))}
-      <rect x="138" y="40" width="24" height="220" rx="8" fill="#d97706" />
-      <rect x="60" y="108" width="180" height="24" rx="8" fill="#d97706" />
+      <path
+        d="M80 240C80 240 65 170 105 130C145 90 220 80 220 80C220 80 220 155 180 195C140 235 80 240 80 240Z"
+        fill="#d97706"
+      />
+      <path
+        d="M80 240L140 175"
+        stroke="#d97706"
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
       <circle cx="150" cy="150" r="80" stroke="#2563eb" strokeWidth="1.5" fill="none" />
       <circle cx="150" cy="150" r="120" stroke="#2563eb" strokeWidth="0.75" fill="none" strokeDasharray="6 12" />
     </svg>
@@ -137,7 +162,6 @@ function StatCard({ icon: Icon, label, value, rawValue, gradient, accentColor, t
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Background glow */}
       <div className="stat-card__glow" style={{ background: `radial-gradient(circle at 80% 20%, ${accentColor}18, transparent 65%)` }} />
 
       <div className="stat-card__top">
@@ -305,8 +329,6 @@ export default function Dashboard() {
   return (
     <>
       <style>{`
-
-
         /* ── Reset & Root ── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -331,7 +353,6 @@ export default function Dashboard() {
           --danger:    #e11d48;
         }
 
-        /* Ensure the host page/layout has no leftover white background */
         html, body, #root { background: #0b1220 !important; }
         main, .main-content, .layout-main, .page-content,
         [class*="content"], [class*="layout"], [class*="main"],
@@ -344,46 +365,37 @@ export default function Dashboard() {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
         }
-
         @keyframes shimmer {
           0%   { background-position: -200% 0; }
           100% { background-position:  200% 0; }
         }
-
         @keyframes spin {
           to { transform: rotate(360deg); }
         }
-
         @keyframes pulse-dot {
           0%, 100% { opacity: 1; transform: scale(1); }
           50%       { opacity: .5; transform: scale(1.3); }
         }
-
         @keyframes float {
           0%, 100% { transform: translateY(0); }
           50%       { transform: translateY(-6px); }
         }
-
         @keyframes sweep {
           from { left: -80%; }
           to   { left: 120%; }
         }
-
         @keyframes slideInLeft {
           from { opacity: 0; transform: translateX(-12px); }
           to   { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes slideInRight {
           from { opacity: 0; transform: translateX(12px); }
           to   { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes scaleIn {
           from { opacity: 0; transform: scale(0.95); }
           to   { opacity: 1; transform: scale(1); }
@@ -401,7 +413,6 @@ export default function Dashboard() {
           overflow-x: hidden;
         }
 
-        /* Ambient background gradient */
         .db::before {
           content: '';
           position: fixed;
@@ -451,7 +462,7 @@ export default function Dashboard() {
           animation: slideInLeft .5s ease both .1s backwards;
         }
 
-        .db-header__cross {
+        .db-header__leaf {
           width: 32px; height: 32px;
           color: var(--gold2);
           filter: drop-shadow(0 0 8px rgba(245,158,11,.4));
@@ -523,11 +534,8 @@ export default function Dashboard() {
           box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 0, 0, 0.2);
         }
 
-        .stat-card--featured {
-          grid-column: span 2;
-        }
+        .stat-card--featured { grid-column: span 2; }
 
-        /* Sweep shimmer on hover */
         .stat-card::before {
           content: '';
           position: absolute;
@@ -538,9 +546,7 @@ export default function Dashboard() {
           animation: none;
           transition: none;
         }
-        .stat-card:hover::before {
-          animation: sweep .6s ease forwards;
-        }
+        .stat-card:hover::before { animation: sweep .6s ease forwards; }
 
         .stat-card__glow {
           position: absolute; inset: 0; pointer-events: none; border-radius: 18px;
@@ -563,10 +569,7 @@ export default function Dashboard() {
           position: relative; z-index: 1;
           transition: transform .3s;
         }
-
-        .stat-card:hover .stat-card__icon-wrap {
-          transform: scale(1.08);
-        }
+        .stat-card:hover .stat-card__icon-wrap { transform: scale(1.08); }
 
         .stat-card__trend {
           display: flex; align-items: center; gap: 3px;
@@ -588,10 +591,7 @@ export default function Dashboard() {
           letter-spacing: -.02em;
           transition: color .25s;
         }
-
-        .stat-card:hover .stat-card__value {
-          color: var(--ice);
-        }
+        .stat-card:hover .stat-card__value { color: var(--ice); }
 
         .stat-card__label {
           font-size: .76rem; color: var(--sub);
@@ -599,10 +599,7 @@ export default function Dashboard() {
           letter-spacing: .01em;
           transition: color .25s;
         }
-
-        .stat-card:hover .stat-card__label {
-          color: var(--text);
-        }
+        .stat-card:hover .stat-card__label { color: var(--text); }
 
         .stat-card__accent-bar {
           position: absolute; bottom: 0; left: 0; right: 0;
@@ -624,7 +621,6 @@ export default function Dashboard() {
           backdrop-filter: blur(10px);
           transition: all .3s;
         }
-
         .panel:hover {
           border-color: rgba(37,99,235,.2);
           box-shadow: 0 8px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.08);
@@ -637,10 +633,7 @@ export default function Dashboard() {
           gap: 1.5rem;
           margin-bottom: 1.75rem;
         }
-
-        @media (max-width: 960px) {
-          .chart-row { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 960px) { .chart-row { grid-template-columns: 1fr; } }
 
         /* ── Section header ── */
         .section-hdr {
@@ -656,10 +649,7 @@ export default function Dashboard() {
           line-height: 1.2;
           transition: color .25s;
         }
-
-        .section-hdr:hover .section-hdr__title {
-          color: var(--ice);
-        }
+        .section-hdr:hover .section-hdr__title { color: var(--ice); }
 
         .section-hdr__sub {
           font-size: .75rem; color: var(--sub);
@@ -677,13 +667,12 @@ export default function Dashboard() {
           font-weight: 500;
           border: 1px solid transparent;
         }
-        .section-hdr__action:hover { 
-          color: var(--ice); 
+        .section-hdr__action:hover {
+          color: var(--ice);
           background: rgba(147,197,253,.08);
           border-color: rgba(147,197,253,.15);
         }
 
-        /* Divider inside panels */
         .panel-divider {
           height: 1px;
           background: var(--border);
@@ -716,10 +705,7 @@ export default function Dashboard() {
           margin-bottom: 4px;
         }
 
-        .chart-tooltip__dot {
-          width: 8px; height: 8px; border-radius: 4px; flex-shrink: 0;
-        }
-
+        .chart-tooltip__dot { width: 8px; height: 8px; border-radius: 4px; flex-shrink: 0; }
         .chart-tooltip__name { color: var(--sub); font-size: .78rem; }
         .chart-tooltip__val  { color: var(--text); font-weight: 600; margin-left: auto; padding-left: 8px; }
 
@@ -730,10 +716,7 @@ export default function Dashboard() {
           gap: 1.5rem;
           margin-bottom: 1.75rem;
         }
-
-        @media (max-width: 1100px) {
-          .bottom-row { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1100px) { .bottom-row { grid-template-columns: 1fr; } }
 
         /* ── Event cards ── */
         .events-list {
@@ -743,7 +726,6 @@ export default function Dashboard() {
           scrollbar-width: thin;
           scrollbar-color: var(--border) transparent;
         }
-
         .events-list::-webkit-scrollbar { width: 4px; }
         .events-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; transition: background .2s; }
         .events-list::-webkit-scrollbar-thumb:hover { background: var(--border2); }
@@ -758,7 +740,6 @@ export default function Dashboard() {
           transition: all .25s cubic-bezier(.16, 1, .3, 1);
           cursor: default;
         }
-
         .event-card:hover {
           background: rgba(37,99,235,.08);
           border-color: rgba(37,99,235,.25);
@@ -776,24 +757,18 @@ export default function Dashboard() {
           text-align: center;
           transition: transform .25s;
         }
-
-        .event-card:hover .event-card__cal {
-          transform: scale(1.05);
-        }
+        .event-card:hover .event-card__cal { transform: scale(1.05); }
 
         .event-card__weekday { font-size: .57rem; text-transform: uppercase; letter-spacing: .1em; opacity: .8; font-family: 'Space Grotesk', sans-serif; }
-        .event-card__day   { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; line-height: 1.05; }
-        .event-card__month { font-size: .57rem; text-transform: uppercase; letter-spacing: .08em; opacity: .85; font-family: 'Space Grotesk', sans-serif; }
+        .event-card__day     { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; line-height: 1.05; }
+        .event-card__month   { font-size: .57rem; text-transform: uppercase; letter-spacing: .08em; opacity: .85; font-family: 'Space Grotesk', sans-serif; }
 
         .event-card__title {
           font-size: .85rem; font-weight: 600; color: var(--text);
           margin-bottom: .2rem; line-height: 1.4;
           transition: color .25s;
         }
-
-        .event-card:hover .event-card__title {
-          color: var(--ice);
-        }
+        .event-card:hover .event-card__title { color: var(--ice); }
 
         .event-card__meta {
           font-size: .72rem; color: var(--sub);
@@ -837,14 +812,8 @@ export default function Dashboard() {
         .activity-wrap::-webkit-scrollbar { height: 5px; }
         .activity-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        .activity-table {
-          width: 100%; border-collapse: collapse;
-          font-size: .83rem;
-        }
-
-        .activity-table thead tr {
-          border-bottom: 1px solid var(--border);
-        }
+        .activity-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+        .activity-table thead tr { border-bottom: 1px solid var(--border); }
 
         .activity-table th {
           text-align: left; padding: .65rem 1rem;
@@ -858,15 +827,10 @@ export default function Dashboard() {
           border-bottom: 1px solid rgba(120,150,210,.06);
           transition: background .2s;
         }
-
         .activity-table tbody tr:last-child { border-bottom: none; }
         .activity-table tbody tr:hover { background: rgba(255,255,255,.03); }
 
-        .activity-table td {
-          padding: .85rem 1rem; color: var(--text);
-          vertical-align: middle;
-        }
-
+        .activity-table td { padding: .85rem 1rem; color: var(--text); vertical-align: middle; }
         .activity-table td.dim { color: var(--sub); }
         .activity-table td.xs { font-size: .74rem; white-space: nowrap; color: var(--muted); font-family: 'Space Grotesk', sans-serif; }
 
@@ -885,7 +849,6 @@ export default function Dashboard() {
           backdrop-filter: blur(10px);
           transition: all .3s;
         }
-
         .banner:hover {
           border-color: rgba(37,99,235,.35);
           box-shadow: 0 12px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
@@ -906,10 +869,7 @@ export default function Dashboard() {
           animation: float 4s ease-in-out infinite;
           transition: transform .3s;
         }
-
-        .banner:hover .banner__icon-wrap {
-          transform: scale(1.08);
-        }
+        .banner:hover .banner__icon-wrap { transform: scale(1.08); }
 
         .banner__text { flex: 1; min-width: 200px; }
 
@@ -921,9 +881,7 @@ export default function Dashboard() {
 
         .banner__sub { font-size: .82rem; color: var(--sub); line-height: 1.6; }
 
-        .banner__pills {
-          display: flex; gap: .75rem; flex-wrap: wrap;
-        }
+        .banner__pills { display: flex; gap: .75rem; flex-wrap: wrap; }
 
         .banner__pill {
           display: flex; align-items: center; gap: .5rem;
@@ -933,15 +891,10 @@ export default function Dashboard() {
           letter-spacing: .03em; white-space: nowrap;
           transition: all .25s;
         }
-
         .banner__pill--blue  { background: rgba(37,99,235,.16); color: var(--ice); border: 1px solid rgba(37,99,235,.25); }
         .banner__pill--gold  { background: rgba(217,119,6,.16); color: var(--gold2); border: 1px solid rgba(217,119,6,.25); }
         .banner__pill--green { background: rgba(5,150,105,.16); color: #34d399; border: 1px solid rgba(5,150,105,.25); }
-
-        .banner__pill:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,.2);
-        }
+        .banner__pill:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
 
         /* ── Empty state ── */
         .empty {
@@ -949,7 +902,6 @@ export default function Dashboard() {
           gap: .8rem; padding: 3rem 1.5rem;
           color: var(--muted); font-size: .85rem;
         }
-
         .empty-icon { width: 36px; height: 36px; opacity: .3; }
 
         /* ── Loading ── */
@@ -979,7 +931,7 @@ export default function Dashboard() {
           animation: spin .6s linear infinite reverse;
         }
 
-        .db-spinner-cross {
+        .db-spinner-leaf {
           width: 20px; height: 20px; color: var(--gold2);
           filter: drop-shadow(0 0 8px rgba(245,158,11,.6));
         }
@@ -1035,7 +987,7 @@ export default function Dashboard() {
               Church Management · Overview
             </div>
             <h1 className="db-header__title">
-              <Cross className="db-header__cross" style={{ width: 32, height: 32 }} />
+              <LeafIcon className="db-header__leaf" style={{ width: 32, height: 32 }} />
               Dashboard
             </h1>
             <p className="db-header__sub">
@@ -1057,7 +1009,7 @@ export default function Dashboard() {
             <div className="db-spinner-wrap">
               <div className="db-spinner" />
               <div className="db-spinner-inner" />
-              <Cross className="db-spinner-cross" style={{ width: 20, height: 20, color: C.gold2 }} />
+              <LeafIcon className="db-spinner-leaf" style={{ width: 20, height: 20, color: C.gold2 }} />
             </div>
             <p style={{ fontSize: '.85rem', color: C.sub, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '.06em', textTransform: 'uppercase' }}>
               Loading church data…
@@ -1067,11 +1019,11 @@ export default function Dashboard() {
           <>
             {/* ── Welcome banner ── */}
             <div className="banner" style={{ animationDelay: '0ms' }}>
-              <RadiantCross />
+              <RadiantLeaf />
               <GlassOrb color="#2563eb" size={180} style={{ top: -40, right: 80, opacity: .5 }} />
               <div className="banner__content">
                 <div className="banner__icon-wrap">
-                  <Cross style={{ width: 26, height: 26, color: C.ice }} />
+                  <LeafIcon style={{ width: 26, height: 26, color: C.ice }} />
                 </div>
                 <div className="banner__text">
                   <div className="banner__title">Your Community at a Glance</div>
@@ -1220,7 +1172,6 @@ export default function Dashboard() {
                       </PieChart>
                     </ResponsiveContainer>
 
-                    {/* Legend with mini progress bars */}
                     {(() => {
                       const total = top_ministries.reduce((s, m) => s + m.member_count, 0);
                       return (
