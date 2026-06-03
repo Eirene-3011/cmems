@@ -6,13 +6,12 @@ async function getAll(req, res, next) {
     const [rows] = await pool.execute(
       `SELECT c.id, c.name, c.description, c.coordinator_id, c.status,
               c.created_at, c.updated_at,
-              CONCAT(m.first_name,' ',m.last_name) AS coordinator_name,
-              COUNT(DISTINCT cm.member_id) AS member_count
+              (SELECT CONCAT(m.first_name,' ',m.last_name)
+               FROM members m WHERE m.id = c.coordinator_id) AS coordinator_name,
+              (SELECT COUNT(DISTINCT cm.member_id)
+               FROM choir_members cm
+               WHERE cm.choir_id = c.id AND cm.status = 'Active') AS member_count
        FROM choirs c
-       LEFT JOIN members m ON m.id = c.coordinator_id
-       LEFT JOIN choir_members cm ON cm.choir_id = c.id AND cm.status = 'Active'
-       GROUP BY c.id, c.name, c.description, c.coordinator_id, c.status,
-                c.created_at, c.updated_at
        ORDER BY c.name`
     );
     res.json({ success: true, data: rows });
@@ -24,9 +23,9 @@ async function getOne(req, res, next) {
     const [rows] = await pool.execute(
       `SELECT c.id, c.name, c.description, c.coordinator_id, c.status,
               c.created_at, c.updated_at,
-              CONCAT(m.first_name,' ',m.last_name) AS coordinator_name
+              (SELECT CONCAT(m.first_name,' ',m.last_name)
+               FROM members m WHERE m.id = c.coordinator_id) AS coordinator_name
        FROM choirs c
-       LEFT JOIN members m ON m.id = c.coordinator_id
        WHERE c.id = ?`, [req.params.id]
     );
     if (!rows.length) return res.status(404).json({ success: false, message: 'Choir not found.' });
