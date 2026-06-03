@@ -1,5 +1,6 @@
-const jwt     = require('jsonwebtoken');
-const { pool }       = require('../config/db');
+const jwt          = require('jsonwebtoken');
+const bcrypt       = require('bcryptjs');
+const { pool }     = require('../config/db');
 const { logActivity } = require('../utils/logger');
 
 async function login(req, res, next) {
@@ -23,23 +24,38 @@ async function login(req, res, next) {
     }
 
     const user = rows[0];
+
     if (user.status !== 'Active') {
       return res.status(403).json({ success: false, message: 'Account is inactive. Contact an administrator.' });
     }
 
-    if (password !== user.password) {
+    // ✅ FIX: use bcrypt.compare instead of plain string compare
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
     const payload = { id: user.id, email: user.email, role: user.role, role_id: user.role_id };
     const token   = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '24h' });
 
-    await logActivity({ userId: user.id, action: 'LOGIN', description: `User ${user.email} logged in`, ipAddress: req.ip });
+    await logActivity({
+      userId: user.id,
+      action: 'LOGIN',
+      description: `User ${user.email} logged in`,
+      ipAddress: req.ip
+    });
 
     res.json({
       success: true,
       token,
-      user: { id: user.id, first_name: user.first_name, last_name: user.last_name, email: user.email, role: user.role, role_id: user.role_id }
+      user: {
+        id:         user.id,
+        first_name: user.first_name,
+        last_name:  user.last_name,
+        email:      user.email,
+        role:       user.role,
+        role_id:    user.role_id
+      }
     });
   } catch (err) {
     next(err);
@@ -58,12 +74,20 @@ async function register(req, res, next) {
       return res.status(409).json({ success: false, message: 'Email already registered.' });
     }
 
+    // ✅ FIX: hash password before storing
+    const hashed = await bcrypt.hash(password, 10);
+
     const [result] = await pool.execute(
       'INSERT INTO users (role_id, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)',
-      [role_id, first_name, last_name, email, password]
+      [role_id, first_name, last_name, email, hashed]
     );
 
-    await logActivity({ userId: result.insertId, action: 'REGISTER', description: `New user registered: ${email}`, ipAddress: req.ip });
+    await logActivity({
+      userId: result.insertId,
+      action: 'REGISTER',
+      description: `New user registered: ${email}`,
+      ipAddress: req.ip
+    });
 
     res.status(201).json({ success: true, message: 'User registered successfully.', id: result.insertId });
   } catch (err) {
