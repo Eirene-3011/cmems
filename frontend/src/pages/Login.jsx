@@ -3,13 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiUsers, FiStar } from 'react-icons/fi';
-
-/* ── Cross / Church Icon ── */
-function CrossIcon({ size = 20, color = 'currentColor' }) {
+/* ── Leaf Icon ── */
+function LeafIcon({ size = 20, color = 'currentColor' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="10.5" y="2" width="3" height="20" rx="1.5" fill={color} />
-      <rect x="3" y="8" width="18" height="3" rx="1.5" fill={color} />
+      <path
+        d="M12 2C7 2 3 7 3 12c0 3.5 2 6.5 5 8l1-4c-1.5-1-2.5-2.5-2.5-4 0-3 2.5-5.5 5.5-5.5S17.5 9 17.5 12c0 1.5-1 3-2.5 4l1 4c3-1.5 5-4.5 5-8 0-5-4-10-9-10z"
+        fill={color}
+        opacity="0.9"
+      />
+      <path
+        d="M12 22V12M12 12C10 10 8 9 7 9"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.7"
+      />
     </svg>
   );
 }
@@ -820,7 +830,7 @@ export default function Login() {
               {/* Brand */}
               <div className="brand stagger s1">
                 <div className="brand-mark">
-                  <CrossIcon size={20} color="#fff" />
+                  <LeafIcon size={20} color="#fff" />
                 </div>
                 <div>
                   <div className="brand-name">FaithConnect</div>
@@ -991,7 +1001,7 @@ export default function Login() {
               <div className="form-footer stagger s7">
                 <div className="footer-brand">
                   <div className="footer-logo">
-                    <CrossIcon size={11} color="#fff" />
+                    <LeafIcon size={11} color="#fff" />
                   </div>
                   FaithConnect v2.0
                 </div>
