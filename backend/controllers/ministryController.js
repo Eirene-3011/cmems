@@ -6,13 +6,12 @@ async function getAll(req, res, next) {
     const [rows] = await pool.execute(
       `SELECT mi.id, mi.name, mi.description, mi.leader_id, mi.status,
               mi.created_at, mi.updated_at,
-              CONCAT(m.first_name,' ',m.last_name) AS leader_name,
-              COUNT(DISTINCT mm.member_id) AS member_count
+              (SELECT CONCAT(m.first_name,' ',m.last_name)
+               FROM members m WHERE m.id = mi.leader_id) AS leader_name,
+              (SELECT COUNT(DISTINCT mm.member_id)
+               FROM member_ministries mm
+               WHERE mm.ministry_id = mi.id AND mm.status = 'Active') AS member_count
        FROM ministries mi
-       LEFT JOIN members m ON m.id = mi.leader_id
-       LEFT JOIN member_ministries mm ON mm.ministry_id = mi.id AND mm.status = 'Active'
-       GROUP BY mi.id, mi.name, mi.description, mi.leader_id, mi.status,
-                mi.created_at, mi.updated_at
        ORDER BY mi.name`
     );
     res.json({ success: true, data: rows });
@@ -24,9 +23,9 @@ async function getOne(req, res, next) {
     const [rows] = await pool.execute(
       `SELECT mi.id, mi.name, mi.description, mi.leader_id, mi.status,
               mi.created_at, mi.updated_at,
-              CONCAT(m.first_name,' ',m.last_name) AS leader_name
+              (SELECT CONCAT(m.first_name,' ',m.last_name)
+               FROM members m WHERE m.id = mi.leader_id) AS leader_name
        FROM ministries mi
-       LEFT JOIN members m ON m.id = mi.leader_id
        WHERE mi.id = ?`, [req.params.id]
     );
     if (!rows.length) return res.status(404).json({ success: false, message: 'Ministry not found.' });
