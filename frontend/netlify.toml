@@ -7,7 +7,7 @@
 # Proxy API calls to Render backend — replace YOUR_RENDER_URL before deploying
 [[redirects]]
   from = "/api/*"
-  to = "https://YOUR_RENDER_URL.onrender.com/api/:splat"
+  to = "https://cmems-api.onrender.com/api/:splat"
   status = 200
   force = true
 
