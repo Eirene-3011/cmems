@@ -2,13 +2,20 @@ require('dotenv').config();
 const express = require('express');
 const cors    = require('cors');
 const morgan  = require('morgan');
-const { testConnection }      = require('./config/db');
+const { testConnection }         = require('./config/db');
 const { errorHandler, notFound } = require('./middleware/error');
 
 const app = express();
 
 // ── Middleware ────────────────────────────────────────────────
-app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://cmems.netlify.app',
+    process.env.CLIENT_URL,
+  ].filter(Boolean),
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
